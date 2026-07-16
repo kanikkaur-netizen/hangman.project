@@ -1,2 +1,176 @@
-hello
-print(hello)
+#Group Names: 
+#Alexander Lighezan
+#Brennen Lee
+#Kanik Kaur
+#Parthiv Sreejayan
+#Rhea Bambawale 
+
+import random
+#Game setup
+wordbank = ["python", "javascript", "computational", "code"]
+guessed_letters = []
+maxlives = 7
+lives = 7
+hangman = [
+"""
+ ________
+|        |
+|
+|
+|
+|
+""",
+"""
+ ________
+|        |
+|        O
+|
+|
+|
+""",
+"""
+ ________
+|        |
+|        O
+|        |
+|
+|
+""",
+"""
+ ________
+|        |
+|        O
+|       /|
+|       
+|
+""",
+"""
+ ________
+|        |
+|        O
+|       /|\\
+|       
+|
+""",
+"""
+ ________
+|        |
+|        O
+|       /|\\
+|       /
+|
+""",
+"""
+ ________
+|        |
+|        O
+|       /|\\
+|       / \\
+|
+"""
+]
+def replay():
+   global lives
+   input("Let's play hangman! If you need help type help. Press enter to continue")
+   word = random.choice(wordbank)
+   wordlength = len(word)
+   print("The word is:")
+   print("_ " * wordlength)
+   lives = 7
+   print(f"You have {lives} lives left.")
+   guessed_letters.clear()
+#Game Intro
+input("Let's play hangman! Press enter to continue")
+print("""
+HOW TO PLAY:
+      
+There is a secret word! You must try to guess it one letter at a time.
+      
+Each correct letter is revealed in every position where it appears in the word.
+      
+Each incorrect letter costs one life and adds one part to the hangman drawing, and the letter cannot be guessed again.
+      
+The game ends when the player reveals every letter in the word (win) or runs out of lives before solving it (loss).
+""")
+word = random.choice(wordbank)
+wordlength = len(word)
+print("The word has %s letters" % len(word))
+print("_ " * wordlength)
+print(f"You have {lives} lives left.")
+#main Loop
+while lives > 0:
+    #game end
+    if lives == 0:
+        print("You have lost all of your lives.")
+        print(f"The word was {word}")
+        playagain = input("Play again? (yes/no): ")
+        if playagain.lower() == "yes":
+            replay()
+            continue
+        elif playagain.lower() == "no":
+            print("Fair enough. Goodbye!")
+            break
+        else:
+            print("Please enter yes or no only.")
+    
+    #Asking for user Input
+    guess = input("Enter a letter: ")
+    if guess.lower() == "help":
+        if guessed_letters:
+            print("Letters guessed so far:", ", ".join(sorted(guessed_letters)))
+        else:
+            print("No letters have been guessed yet.")
+        continue
+
+    # Guess Answer
+    if guess.lower() == "guess answer":
+        full_guess = input("Enter your guess for the entire word: ")
+        if full_guess.lower() == word:
+            print("Congrats! You guessed the entire word correctly!")
+        else:
+            print(f"That's wrong! The word was '{word}'. You lose!")
+        playagain = input("Play again? (yes/no): ")
+        if playagain.lower() == "yes":
+            replay()
+            continue
+        elif playagain.lower() == "no":
+            print("Fair enough. Goodbye!")
+            break
+        continue
+      
+    if len(guess) == 1 and guess.isalpha():
+        if guess.lower() in guessed_letters:
+            print("This has already been guessed!")
+            continue
+        guessed_letters.append(guess.lower())
+        if guess.lower() not in word:
+            lives -= 1
+            print("That's incorrect, try a different letter.")
+            print(hangman[maxlives - lives - 1])
+            print(f"You have {lives} lives left.")
+            #maxlives - lives - 1 describes the number of lives left. The -1 is due to indexes starting at 0, not 1.
+        
+        #Display Line
+        display = ""
+        for letter in word:
+            if letter in guessed_letters:
+                display += letter + " "
+            else:
+                display += " _ "
+        print(display)
+    if "_" not in display:
+        print("Congrats! You guessed the word correctly!")
+        playagain = input("Play again? (yes/no): ")
+        if playagain.lower() == "yes":
+            replay()
+            continue
+        elif playagain.lower() == "no":
+            print("Fair enough. Goodbye!")
+            break
+    #Making sure input is valid  
+    elif len(guess) > 1:
+        print("Please type singular characters")
+        print (f"You have {lives} lives left.")
+    elif not guess.isalpha():
+        print("Please type only letters")
+        print (f"You have {lives} lives left")
